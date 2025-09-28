@@ -5,7 +5,12 @@ const detectEnvironment = () => {
   const { protocol, hostname, port } = window.location;
 
   // Development environment
-  if (hostname === "localhost" || hostname === "127.0.0.1" || port === "8080") {
+  if (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    port === "8080" ||
+    port === "5000"
+  ) {
     return "development";
   }
 
