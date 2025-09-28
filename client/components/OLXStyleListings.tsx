@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart, MapPin, Clock, MessageCircle, Send } from "lucide-react";
+import Watermark from "./Watermark";
 import PropertyLoadingSkeleton from "./PropertyLoadingSkeleton";
 import EnquiryModal from "./EnquiryModal";
 import { NetworkError } from "../utils/network-utils";
@@ -187,7 +188,7 @@ export default function OLXStyleListings() {
           Fresh recommendations
         </h2>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {properties.map((property) => (
             <div
               key={property._id}
@@ -211,6 +212,7 @@ export default function OLXStyleListings() {
                     target.src = "/placeholder.png";
                   }}
                 />
+                <Watermark small />
 
                 {/* Premium Badge */}
                 {property.premium && (
