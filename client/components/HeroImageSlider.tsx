@@ -189,9 +189,9 @@ const HeroImageSlider: React.FC = () => {
         setApi={setApi}
         className="w-full h-full"
       >
-        <CarouselContent className="h-full">
+        <CarouselContent className="h-full ml-0">
           {banners.map((banner, index) => (
-            <CarouselItem key={banner._id || index} className="h-full">
+            <CarouselItem key={banner._id || index} className="h-full pl-0">
               <div
                 className={`relative w-full h-full ${banner.link ? "cursor-pointer" : ""}`}
                 onClick={() => handleBannerClick(banner)}
