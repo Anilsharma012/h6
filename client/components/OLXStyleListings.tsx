@@ -187,7 +187,7 @@ export default function OLXStyleListings() {
           Fresh recommendations
         </h2>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
           {properties.map((property) => (
             <div
               key={property._id}
