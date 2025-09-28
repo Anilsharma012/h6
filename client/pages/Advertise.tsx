@@ -16,7 +16,7 @@ import {
 import { AdPackage } from "@shared/types";
 import Header from "../components/Header";
 import BottomNavigation from "../components/BottomNavigation";
-import StaticFooter from "../components/StaticFooter";
+import DynamicFooter from "../components/DynamicFooter";
 
 export default function Advertise() {
   const [packages, setPackages] = useState<AdPackage[]>([]);
@@ -92,7 +92,7 @@ export default function Advertise() {
           </div>
         </div>
         <BottomNavigation />
-        <StaticFooter />
+        <DynamicFooter />
       </div>
     );
   }
@@ -294,7 +294,7 @@ export default function Advertise() {
       </main>
 
       <BottomNavigation />
-      <StaticFooter />
+      <DynamicFooter />
     </div>
   );
 }
