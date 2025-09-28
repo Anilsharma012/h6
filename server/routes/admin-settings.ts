@@ -62,7 +62,7 @@ export const getAdminSettings: RequestHandler = async (req, res) => {
       // Create default settings if they don't exist
       const defaultSettings: AdminSettings = {
         general: {
-          siteName: "Aashish Property",
+          siteName: "Ashish Properties",
           siteDescription: "Your trusted partner in real estate solutions",
           siteUrl: "",
           contactEmail: "contact@aashishproperty.com",
