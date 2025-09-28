@@ -8,7 +8,7 @@ import PWAInstallPrompt from "../components/PWAInstallPrompt";
 // import PWAInstallButton from "../components/PWAInstallButton"; // Removed as requested
 import BottomNavigation from "../components/BottomNavigation";
 import HomepageBanner from "../components/HomepageBanner";
-import StaticFooter from "../components/StaticFooter";
+import DynamicFooter from "../components/DynamicFooter";
 import HeroImageSlider from "../components/HeroImageSlider";
 import PropertyAdsSlider from "../components/PropertyAdsSlider";
 import AdSlot from "../components/AdSlot";
@@ -25,7 +25,9 @@ export default function Index() {
         <HeroImageSlider />
 
         {/* Dynamic Categories (moved up as requested) */}
-        <OLXStyleCategories />
+        <div className="mt-4 md:mt-6">
+          <OLXStyleCategories />
+        </div>
 
         {/* Ad Slot: Below categories (CLS-safe) */}
         <div className="px-4 mt-4">
@@ -52,7 +54,7 @@ export default function Index() {
       <PWAInstallPrompt />
       {/* <PWAInstallButton /> */}{" "}
       {/* Removed red Install App button as requested */}
-      <StaticFooter />
+      <DynamicFooter />
     </div>
   );
 }
