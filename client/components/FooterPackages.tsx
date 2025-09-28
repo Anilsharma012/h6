@@ -102,7 +102,7 @@ export default function FooterPackages() {
 
               {/* CTA Button */}
               <Button
-                onClick={() => (window.location.href = `/checkout/${pkg._id}`)}
+                onClick={() => (window.location.href = `/advertise`)}
                 className="w-full bg-white text-[#C70000] hover:bg-red-50 text-sm py-2"
               >
                 Choose Package

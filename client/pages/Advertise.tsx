@@ -204,9 +204,7 @@ export default function Advertise() {
 
                         {/* CTA Button */}
                         <Button
-                          onClick={() =>
-                            (window.location.href = `/checkout/${pkg._id}`)
-                          }
+                          onClick={() => (window.location.href = "/post-property")}
                           className={`w-full ${
                             pkg.type === "basic"
                               ? "bg-gray-600 hover:bg-gray-700"
