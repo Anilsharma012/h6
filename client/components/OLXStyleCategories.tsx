@@ -215,7 +215,7 @@ function OLXStyleCategories() {
 
       {/* Categories Grid */}
       <div className="px-4 pb-4">
-        <div className="grid grid-cols-5 gap-2.5 pt-10">
+        <div className="grid grid-cols-5 gap-3 pt-10">
           {(categories || []).slice(0, 10).map((category, index) => {
             if (!category || !category.name) return null;
 
