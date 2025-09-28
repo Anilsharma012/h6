@@ -22,6 +22,7 @@ import Lease from "./pages/Lease";
 import PG from "./pages/PG";
 import Services from "./pages/Services";
 import Advertise from "./pages/Advertise";
+import Checkout from "./pages/Checkout";
 import Chat from "./pages/Chat";
 import ChatPage from "./pages/ChatPage";
 import ChatConversation from "./pages/ChatConversation";
@@ -138,6 +139,7 @@ function App() {
                     element={<OtherServicesListings />}
                   />
                   <Route path="/advertise" element={<Advertise />} />
+                  <Route path="/checkout/:id" element={<Checkout />} />
                   {/* Category/Subcategory Listings */}
                   <Route path="/buy/:slug" element={<CategoryProperties />} />
                   <Route path="/sale/:slug" element={<CategoryProperties />} />
