@@ -6,7 +6,7 @@ const detectEnvironment = () => {
   const { protocol, hostname, port } = window.location;
 
   // Development environment
-  if (hostname === "localhost" || hostname === "127.0.0.1" || port === "8080") {
+  if (hostname === "localhost" || hostname === "127.0.0.1" || port === "8080" || port === "5000") {
     return "development";
   }
 
@@ -35,7 +35,8 @@ const getApiBaseUrl = () => {
 
   switch (environment) {
     case "development":
-      return "http://localhost:8080";
+      // Use relative URL in dev so the Vite+Express single server (port 5000) handles /api/*
+      return "";
     case "fly":
       return `${window.location.protocol}//${window.location.host}`;
     case "netlify":
