@@ -5,23 +5,30 @@ import { safeReadResponse } from "./response-utils";
 // Make global fetch resilient: wrap native fetch so network failures return a safe Response-like object
 if (typeof window !== "undefined" && typeof window.fetch === "function") {
   const _nativeFetch = window.fetch.bind(window);
+  const reported = new Set<string>();
   (window as any).fetch = (...args: any[]) => {
     try {
       const p = _nativeFetch(...args);
       return p.catch((err: any) => {
         // Normalize AbortError/timeout to a structured timeout response so callers don't crash
         const message = err?.message || String(err);
+        const req = args?.[0];
+        const url = typeof req === "string" ? req : (req && req.url) ? req.url : "<unknown>";
+        const key = `${String(message)}::${url}`;
         if (
           err?.name === "AbortError" ||
           String(message).toLowerCase().includes("aborted") ||
           String(message).toLowerCase().includes("timeout")
         ) {
-          console.debug("Fetch aborted/timeout (normalized):", message);
+          if (!reported.has(key)) {
+            reported.add(key);
+            console.debug("Fetch timeout:", url);
+          }
           return Promise.resolve({
             ok: false,
             status: 408,
             async json() {
-              return { error: "timeout" };
+              return { error: "timeout", url };
             },
             async text() {
               return "";
@@ -32,12 +39,15 @@ if (typeof window !== "undefined" && typeof window.fetch === "function") {
           } as any);
         }
 
-        console.error("Wrapped fetch network error:", message || err);
+        if (!reported.has(key)) {
+          reported.add(key);
+          console.warn("Network error (fetch):", url, "=>", message || err);
+        }
         return {
           ok: false,
           status: 0,
           async json() {
-            return { error: "Network error" };
+            return { error: "Network error", url };
           },
           async text() {
             return "";
@@ -56,12 +66,14 @@ if (typeof window !== "undefined" && typeof window.fetch === "function") {
       ) {
         return Promise.reject(err);
       }
-      console.error("Wrapped fetch unexpected error:", err);
+      const req = args?.[0];
+      const url = typeof req === "string" ? req : (req && req.url) ? req.url : "<unknown>";
+      console.warn("Wrapped fetch unexpected error:", url, err);
       return Promise.resolve({
         ok: false,
         status: 0,
         async json() {
-          return { error: "Network error" };
+          return { error: "Network error", url };
         },
         async text() {
           return "";
