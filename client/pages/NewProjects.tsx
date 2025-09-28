@@ -12,8 +12,23 @@ interface Banner {
   isActive: boolean;
 }
 
+interface Project {
+  _id?: string;
+  name: string;
+  slug: string;
+  description?: string;
+  images?: string[];
+  imageUrl?: string;
+  location?: string;
+  price?: number;
+  priceRange?: string;
+  status?: string;
+  isActive?: boolean;
+}
+
 export default function NewProjects() {
   const [banners, setBanners] = useState<Banner[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, skipSnaps: false });
 
@@ -33,18 +48,38 @@ export default function NewProjects() {
     }
   }, []);
 
+  const fetchProjects = useCallback(async () => {
+    try {
+      const res = await fetch("/api/new-projects?limit=50", { cache: "no-store" });
+      const data = await res.json();
+      if (data && data.success && Array.isArray(data.data)) {
+        setProjects(data.data);
+      } else {
+        setProjects([]);
+      }
+    } catch (e) {
+      console.warn("Failed to load new projects:", e);
+      setProjects([]);
+    }
+  }, []);
+
   useEffect(() => {
     fetchBanners();
+    fetchProjects();
 
     const onUpdate = () => {
       fetchBanners();
+      fetchProjects();
     };
 
     window.addEventListener("newProjectsUpdated", onUpdate);
 
     // Poll as fallback every 15s when visible
     const interval = setInterval(() => {
-      if (document.visibilityState === "visible") fetchBanners();
+      if (document.visibilityState === "visible") {
+        fetchBanners();
+        fetchProjects();
+      }
     }, 15000);
 
     return () => {
@@ -84,10 +119,10 @@ export default function NewProjects() {
 
         {banners.length > 0 ? (
           <div className="embla overflow-hidden rounded-lg">
-            <div className="embla__viewport" ref={emblaRef}>
-              <div className="embla__container flex">
+            <div className="embla__viewport w-full" ref={emblaRef}>
+              <div className="embla__container flex w-full">
                 {banners.map((b) => (
-                  <div key={b._id} className="embla__slide min-w-full">
+                  <div key={b._id} className="embla__slide min-w-full basis-full">
                     <a href={b.link} className="block w-full">
                       <div className="relative w-full h-64 md:h-96 bg-gray-100 rounded-lg overflow-hidden">
                         <img
@@ -111,9 +146,39 @@ export default function NewProjects() {
           <div className="text-center py-12 text-gray-600">No banners to display.</div>
         )}
 
-        {/* Projects list placeholder (could fetch projects listing) */}
         <section className="mt-8">
-          <p className="text-gray-700">Explore upcoming and ongoing projects below.</p>
+          {projects.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {projects.map((p) => (
+                <a
+                  key={p._id || p.slug}
+                  href={`/new-projects/${p.slug}`}
+                  className="block bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition"
+                >
+                  <div className="relative w-full aspect-square bg-gray-100">
+                    <img
+                      src={p.images?.[0] || p.imageUrl || "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&h=400&fit=crop"}
+                      alt={p.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="p-3">
+                    <div className="text-sm text-gray-500 mb-1">{p.location}</div>
+                    <div className="font-semibold text-gray-900 line-clamp-2">{p.name}</div>
+                    {(p.priceRange || p.price) && (
+                      <div className="text-[#C70000] text-sm mt-1">{p.priceRange || `₹${p.price}`}</div>
+                    )}
+                    {p.status && (
+                      <div className="text-xs text-gray-500 mt-1 capitalize">{p.status}</div>
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="text-gray-700">Explore upcoming and ongoing projects below.</div>
+          )}
         </section>
       </main>
 
