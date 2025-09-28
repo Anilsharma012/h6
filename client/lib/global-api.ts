@@ -32,7 +32,9 @@ if (typeof window !== "undefined" && typeof window.fetch === "function") {
           } as any);
         }
 
-        console.error("Wrapped fetch network error:", message || err);
+        const req = (args && args[0]) as any;
+        const reqUrl = typeof req === "string" ? req : req?.url || "";
+        console.error("Wrapped fetch network error:", message || err, reqUrl);
         return {
           ok: false,
           status: 0,
