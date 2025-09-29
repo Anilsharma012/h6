@@ -24,7 +24,9 @@ function broadcast(event: string, data: any) {
     try {
       res.write(payload);
     } catch (e) {
-      try { sseClients.delete(res); } catch {}
+      try {
+        sseClients.delete(res);
+      } catch {}
     }
   }
 }
@@ -55,80 +57,119 @@ export const listLocations: RequestHandler = async (_req, res) => {
 
     res.json({ success: true, data: list });
   } catch (e: any) {
-    res.status(500).json({ success: false, error: e.message || "Failed to load locations" });
+    res
+      .status(500)
+      .json({ success: false, error: e.message || "Failed to load locations" });
   }
 };
 
-export const createLocation: RequestHandler[] = [authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const db = getDatabase();
-    const body = req.body || {};
-    const doc: Omit<MapLocation, "_id"> = {
-      name: String(body.name || "").trim(),
-      city: body.city ? String(body.city) : undefined,
-      address: body.address ? String(body.address) : undefined,
-      lat: Number(body.lat),
-      lng: Number(body.lng),
-      active: body.active !== false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+export const createLocation: RequestHandler[] = [
+  authenticateToken,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const db = getDatabase();
+      const body = req.body || {};
+      const doc: Omit<MapLocation, "_id"> = {
+        name: String(body.name || "").trim(),
+        city: body.city ? String(body.city) : undefined,
+        address: body.address ? String(body.address) : undefined,
+        lat: Number(body.lat),
+        lng: Number(body.lng),
+        active: body.active !== false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
-    if (!doc.name || isNaN(doc.lat) || isNaN(doc.lng)) {
-      return res.status(400).json({ success: false, error: "name, lat, lng are required" });
+      if (!doc.name || isNaN(doc.lat) || isNaN(doc.lng)) {
+        return res
+          .status(400)
+          .json({ success: false, error: "name, lat, lng are required" });
+      }
+
+      const result = await db.collection("map_locations").insertOne(doc);
+      const created = await db
+        .collection("map_locations")
+        .findOne({ _id: result.insertedId });
+
+      broadcast("locations:update", { type: "create", location: created });
+      res.json({ success: true, data: created });
+    } catch (e: any) {
+      res
+        .status(500)
+        .json({
+          success: false,
+          error: e.message || "Failed to create location",
+        });
     }
+  },
+];
 
-    const result = await db.collection("map_locations").insertOne(doc);
-    const created = await db.collection("map_locations").findOne({ _id: result.insertedId });
+export const updateLocation: RequestHandler[] = [
+  authenticateToken,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const db = getDatabase();
+      const { id } = req.params as any;
+      const body = req.body || {};
 
-    broadcast("locations:update", { type: "create", location: created });
-    res.json({ success: true, data: created });
-  } catch (e: any) {
-    res.status(500).json({ success: false, error: e.message || "Failed to create location" });
-  }
-}];
+      const update: any = {
+        updatedAt: new Date(),
+      };
+      if (body.name !== undefined) update.name = String(body.name);
+      if (body.city !== undefined) update.city = String(body.city);
+      if (body.address !== undefined) update.address = String(body.address);
+      if (body.lat !== undefined) update.lat = Number(body.lat);
+      if (body.lng !== undefined) update.lng = Number(body.lng);
+      if (body.active !== undefined) update.active = !!body.active;
 
-export const updateLocation: RequestHandler[] = [authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const db = getDatabase();
-    const { id } = req.params as any;
-    const body = req.body || {};
+      await db
+        .collection("map_locations")
+        .updateOne({ _id: new ObjectId(id) }, { $set: update });
 
-    const update: any = {
-      updatedAt: new Date(),
-    };
-    if (body.name !== undefined) update.name = String(body.name);
-    if (body.city !== undefined) update.city = String(body.city);
-    if (body.address !== undefined) update.address = String(body.address);
-    if (body.lat !== undefined) update.lat = Number(body.lat);
-    if (body.lng !== undefined) update.lng = Number(body.lng);
-    if (body.active !== undefined) update.active = !!body.active;
+      const updated = await db
+        .collection("map_locations")
+        .findOne({ _id: new ObjectId(id) });
 
-    await db
-      .collection("map_locations")
-      .updateOne({ _id: new ObjectId(id) }, { $set: update });
-
-    const updated = await db.collection("map_locations").findOne({ _id: new ObjectId(id) });
-
-    broadcast("locations:update", { type: "update", location: updated });
-    res.json({ success: true, data: updated });
-  } catch (e: any) {
-    res.status(500).json({ success: false, error: e.message || "Failed to update location" });
-  }
-}];
-
-export const deleteLocation: RequestHandler[] = [authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    const db = getDatabase();
-    const { id } = req.params as any;
-    const existing = await db.collection("map_locations").findOne({ _id: new ObjectId(id) });
-    const result = await db.collection("map_locations").deleteOne({ _id: new ObjectId(id) });
-    if (!result.deletedCount) {
-      return res.status(404).json({ success: false, error: "Not found" });
+      broadcast("locations:update", { type: "update", location: updated });
+      res.json({ success: true, data: updated });
+    } catch (e: any) {
+      res
+        .status(500)
+        .json({
+          success: false,
+          error: e.message || "Failed to update location",
+        });
     }
-    broadcast("locations:update", { type: "delete", location: existing, id });
-    res.json({ success: true, data: { id } });
-  } catch (e: any) {
-    res.status(500).json({ success: false, error: e.message || "Failed to delete location" });
-  }
-}];
+  },
+];
+
+export const deleteLocation: RequestHandler[] = [
+  authenticateToken,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const db = getDatabase();
+      const { id } = req.params as any;
+      const existing = await db
+        .collection("map_locations")
+        .findOne({ _id: new ObjectId(id) });
+      const result = await db
+        .collection("map_locations")
+        .deleteOne({ _id: new ObjectId(id) });
+      if (!result.deletedCount) {
+        return res.status(404).json({ success: false, error: "Not found" });
+      }
+      broadcast("locations:update", { type: "delete", location: existing, id });
+      res.json({ success: true, data: { id } });
+    } catch (e: any) {
+      res
+        .status(500)
+        .json({
+          success: false,
+          error: e.message || "Failed to delete location",
+        });
+    }
+  },
+];

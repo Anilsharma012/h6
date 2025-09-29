@@ -41,15 +41,23 @@ export default function MapLocationsManagement() {
             } else {
               map.set(payload.location._id, payload.location);
             }
-            return Array.from(map.values()).sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
+            return Array.from(map.values()).sort((a, b) =>
+              (b.updatedAt || "").localeCompare(a.updatedAt || ""),
+            );
           });
         }
       } catch {}
     });
     es.onerror = () => {
-      try { es.close(); } catch {}
+      try {
+        es.close();
+      } catch {}
     };
-    return () => { try { es.close(); } catch {} };
+    return () => {
+      try {
+        es.close();
+      } catch {}
+    };
   }, []);
 
   const fetchLocations = async () => {
@@ -75,7 +83,10 @@ export default function MapLocationsManagement() {
     try {
       const res = await fetch("/api/admin/map-locations", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(form),
       });
       const data = await res.json();
@@ -94,7 +105,10 @@ export default function MapLocationsManagement() {
     try {
       const res = await fetch(`/api/admin/map-locations/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(patch),
       });
       const data = await res.json();
@@ -123,7 +137,9 @@ export default function MapLocationsManagement() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4 flex items-center gap-2"><MapPin className="h-5 w-5"/> Map Locations</h1>
+      <h1 className="text-2xl font-bold mb-4 flex items-center gap-2">
+        <MapPin className="h-5 w-5" /> Map Locations
+      </h1>
 
       <Card className="mb-6">
         <CardHeader>
@@ -131,19 +147,56 @@ export default function MapLocationsManagement() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
-            <Input placeholder="Name" value={form.name || ""} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-            <Input placeholder="City" value={form.city || ""} onChange={(e) => setForm({ ...form, city: e.target.value })} />
-            <Input placeholder="Address" value={form.address || ""} onChange={(e) => setForm({ ...form, address: e.target.value })} />
-            <Input placeholder="Latitude" type="number" value={form.lat ?? ""} onChange={(e) => setForm({ ...form, lat: Number(e.target.value) })} />
-            <Input placeholder="Longitude" type="number" value={form.lng ?? ""} onChange={(e) => setForm({ ...form, lng: Number(e.target.value) })} />
+            <Input
+              placeholder="Name"
+              value={form.name || ""}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+            <Input
+              placeholder="City"
+              value={form.city || ""}
+              onChange={(e) => setForm({ ...form, city: e.target.value })}
+            />
+            <Input
+              placeholder="Address"
+              value={form.address || ""}
+              onChange={(e) => setForm({ ...form, address: e.target.value })}
+            />
+            <Input
+              placeholder="Latitude"
+              type="number"
+              value={form.lat ?? ""}
+              onChange={(e) =>
+                setForm({ ...form, lat: Number(e.target.value) })
+              }
+            />
+            <Input
+              placeholder="Longitude"
+              type="number"
+              value={form.lng ?? ""}
+              onChange={(e) =>
+                setForm({ ...form, lng: Number(e.target.value) })
+              }
+            />
             <div className="flex items-center gap-2">
-              <input id="active" type="checkbox" checked={form.active !== false} onChange={(e) => setForm({ ...form, active: e.target.checked })} />
-              <label htmlFor="active" className="text-sm">Active</label>
+              <input
+                id="active"
+                type="checkbox"
+                checked={form.active !== false}
+                onChange={(e) => setForm({ ...form, active: e.target.checked })}
+              />
+              <label htmlFor="active" className="text-sm">
+                Active
+              </label>
             </div>
           </div>
           <div className="mt-3">
-            <Button disabled={saving} onClick={create} className="bg-[#C70000] hover:bg-[#A60000]">
-              <Plus className="h-4 w-4 mr-1"/> Add Location
+            <Button
+              disabled={saving}
+              onClick={create}
+              className="bg-[#C70000] hover:bg-[#A60000]"
+            >
+              <Plus className="h-4 w-4 mr-1" /> Add Location
             </Button>
           </div>
         </CardContent>
@@ -175,17 +228,124 @@ export default function MapLocationsManagement() {
                 <tbody>
                   {locations.map((loc) => (
                     <tr key={loc._id} className="border-b">
-                      <td className="py-2 pr-3"><Input value={loc.name} onChange={(e) => setLocations((prev) => prev.map((l) => l._id === loc._id ? { ...l, name: e.target.value } : l))} onBlur={(e) => update(loc._id!, { name: e.target.value })} /></td>
-                      <td className="py-2 pr-3"><Input value={loc.city || ""} onChange={(e) => setLocations((prev) => prev.map((l) => l._id === loc._id ? { ...l, city: e.target.value } : l))} onBlur={(e) => update(loc._id!, { city: e.target.value })} /></td>
-                      <td className="py-2 pr-3"><Input value={loc.address || ""} onChange={(e) => setLocations((prev) => prev.map((l) => l._id === loc._id ? { ...l, address: e.target.value } : l))} onBlur={(e) => update(loc._id!, { address: e.target.value })} /></td>
-                      <td className="py-2 pr-3"><Input type="number" value={String(loc.lat)} onChange={(e) => setLocations((prev) => prev.map((l) => l._id === loc._id ? { ...l, lat: Number(e.target.value) } : l))} onBlur={(e) => update(loc._id!, { lat: Number(e.target.value) })} /></td>
-                      <td className="py-2 pr-3"><Input type="number" value={String(loc.lng)} onChange={(e) => setLocations((prev) => prev.map((l) => l._id === loc._id ? { ...l, lng: Number(e.target.value) } : l))} onBlur={(e) => update(loc._id!, { lng: Number(e.target.value) })} /></td>
                       <td className="py-2 pr-3">
-                        <input type="checkbox" checked={!!loc.active} onChange={(e) => { setLocations((prev) => prev.map((l) => l._id === loc._id ? { ...l, active: e.target.checked } : l)); update(loc._id!, { active: e.target.checked }); }} />
+                        <Input
+                          value={loc.name}
+                          onChange={(e) =>
+                            setLocations((prev) =>
+                              prev.map((l) =>
+                                l._id === loc._id
+                                  ? { ...l, name: e.target.value }
+                                  : l,
+                              ),
+                            )
+                          }
+                          onBlur={(e) =>
+                            update(loc._id!, { name: e.target.value })
+                          }
+                        />
+                      </td>
+                      <td className="py-2 pr-3">
+                        <Input
+                          value={loc.city || ""}
+                          onChange={(e) =>
+                            setLocations((prev) =>
+                              prev.map((l) =>
+                                l._id === loc._id
+                                  ? { ...l, city: e.target.value }
+                                  : l,
+                              ),
+                            )
+                          }
+                          onBlur={(e) =>
+                            update(loc._id!, { city: e.target.value })
+                          }
+                        />
+                      </td>
+                      <td className="py-2 pr-3">
+                        <Input
+                          value={loc.address || ""}
+                          onChange={(e) =>
+                            setLocations((prev) =>
+                              prev.map((l) =>
+                                l._id === loc._id
+                                  ? { ...l, address: e.target.value }
+                                  : l,
+                              ),
+                            )
+                          }
+                          onBlur={(e) =>
+                            update(loc._id!, { address: e.target.value })
+                          }
+                        />
+                      </td>
+                      <td className="py-2 pr-3">
+                        <Input
+                          type="number"
+                          value={String(loc.lat)}
+                          onChange={(e) =>
+                            setLocations((prev) =>
+                              prev.map((l) =>
+                                l._id === loc._id
+                                  ? { ...l, lat: Number(e.target.value) }
+                                  : l,
+                              ),
+                            )
+                          }
+                          onBlur={(e) =>
+                            update(loc._id!, { lat: Number(e.target.value) })
+                          }
+                        />
+                      </td>
+                      <td className="py-2 pr-3">
+                        <Input
+                          type="number"
+                          value={String(loc.lng)}
+                          onChange={(e) =>
+                            setLocations((prev) =>
+                              prev.map((l) =>
+                                l._id === loc._id
+                                  ? { ...l, lng: Number(e.target.value) }
+                                  : l,
+                              ),
+                            )
+                          }
+                          onBlur={(e) =>
+                            update(loc._id!, { lng: Number(e.target.value) })
+                          }
+                        />
+                      </td>
+                      <td className="py-2 pr-3">
+                        <input
+                          type="checkbox"
+                          checked={!!loc.active}
+                          onChange={(e) => {
+                            setLocations((prev) =>
+                              prev.map((l) =>
+                                l._id === loc._id
+                                  ? { ...l, active: e.target.checked }
+                                  : l,
+                              ),
+                            );
+                            update(loc._id!, { active: e.target.checked });
+                          }}
+                        />
                       </td>
                       <td className="py-2 pr-3 flex items-center gap-2">
-                        <Button size="sm" variant="outline" onClick={() => update(loc._id!, { name: loc.name })}><Save className="h-4 w-4"/></Button>
-                        <Button size="sm" variant="destructive" onClick={() => remove(loc._id!)}><Trash2 className="h-4 w-4"/></Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => update(loc._id!, { name: loc.name })}
+                        >
+                          <Save className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => remove(loc._id!)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </td>
                     </tr>
                   ))}

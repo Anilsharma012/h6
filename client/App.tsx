@@ -138,7 +138,10 @@ function App() {
                     element={<OtherServicesListings />}
                   />
                   <Route path="/advertise" element={<Advertise />} />
-                  <Route path="/packages" element={<Navigate to="/advertise" replace />} />
+                  <Route
+                    path="/packages"
+                    element={<Navigate to="/advertise" replace />}
+                  />
                   {/* Category/Subcategory Listings */}
                   <Route path="/buy/:slug" element={<CategoryProperties />} />
                   <Route path="/sale/:slug" element={<CategoryProperties />} />
@@ -254,7 +257,10 @@ function App() {
 
                   {/* Content Pages */}
                   <Route path="/pages" element={<Navigate to="/" replace />} />
-                  <Route path="/pages/:slug" element={<Navigate to="/p/:slug" replace />} />
+                  <Route
+                    path="/pages/:slug"
+                    element={<Navigate to="/p/:slug" replace />}
+                  />
                   <Route path="/about-us" element={<AboutUs />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route

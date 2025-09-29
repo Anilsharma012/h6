@@ -108,12 +108,12 @@ import {
 import {
   registerUser,
   loginUser,
-  sendOTP,          // (deprecated, but mounted)
-  verifyOTP,        // (deprecated, but mounted)
+  sendOTP, // (deprecated, but mounted)
+  verifyOTP, // (deprecated, but mounted)
   googleAuth,
   getUserProfile,
   updateUserProfile,
-  firebaseLogin,    // <-- ADD THIS
+  firebaseLogin, // <-- ADD THIS
 } from "./routes/auth";
 
 // Admin routes
@@ -745,7 +745,6 @@ export function createServer() {
   app.get("/api/auth/profile", authenticateToken, getUserProfile);
   app.put("/api/auth/profile", authenticateToken, updateUserProfile);
   app.post("/api/auth/firebase-login", firebaseLogin); // ✅ ADD THIS LINE
-
 
   // Email verification routes
   app.post("/api/auth/send-verification", sendEmailVerification);
@@ -2214,9 +2213,24 @@ export function createServer() {
   // Map Locations (public + admin)
   app.get("/api/map-locations", listMapLocations);
   app.get("/api/map-locations/stream", streamMapLocations);
-  app.post("/api/admin/map-locations", authenticateToken, requireAdmin, createMapLocation);
-  app.put("/api/admin/map-locations/:id", authenticateToken, requireAdmin, updateMapLocation);
-  app.delete("/api/admin/map-locations/:id", authenticateToken, requireAdmin, deleteMapLocation);
+  app.post(
+    "/api/admin/map-locations",
+    authenticateToken,
+    requireAdmin,
+    createMapLocation,
+  );
+  app.put(
+    "/api/admin/map-locations/:id",
+    authenticateToken,
+    requireAdmin,
+    updateMapLocation,
+  );
+  app.delete(
+    "/api/admin/map-locations/:id",
+    authenticateToken,
+    requireAdmin,
+    deleteMapLocation,
+  );
 
   // Admin routes for projects
   app.get(
