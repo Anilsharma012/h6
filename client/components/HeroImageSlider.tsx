@@ -196,25 +196,24 @@ const HeroImageSlider: React.FC = () => {
                 className={`relative w-full h-full ${banner.link ? "cursor-pointer" : ""}`}
                 onClick={() => handleBannerClick(banner)}
               >
-                {/* Banner Image */}
-                <img
-                  src={banner.imageUrl}
-                  alt={banner.title}
-                  className="w-full h-full object-cover"
-                  loading={index === 0 ? "eager" : "lazy"} // Load first image immediately, others lazily
-                  onError={(e) => {
-                    // Fallback if image fails to load
-                    console.warn(
-                      "⚠️ Failed to load banner image:",
-                      banner.imageUrl,
-                    );
-                    (e.target as HTMLImageElement).src =
-                      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&h=500&fit=crop&q=80";
-                  }}
+                {/* Banner Image as background to ensure full cover on all devices */}
+                <div
+                  className="absolute inset-0 bg-center bg-cover"
+                  style={{ backgroundImage: `url(${banner.imageUrl})` }}
                 />
 
+                {/* Preload first image to reduce flash */}
+                {index === 0 && (
+                  <img
+                    src={banner.imageUrl}
+                    alt={banner.title}
+                    className="hidden"
+                    loading="eager"
+                  />
+                )}
+
                 {/* Dark overlay + heading/subtext as per requirements */}
-                <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+                <div className="absolute inset-0 bg-black/50"></div>
 
                 {/* Content Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center z-10">
