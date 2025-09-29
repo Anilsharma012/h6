@@ -392,6 +392,15 @@ import {
   //  initializeHomepageSliders
 } from "./routes/homepage-slider";
 
+// Map locations routes (CRUD + realtime SSE)
+import {
+  listLocations as listMapLocations,
+  createLocation as createMapLocation,
+  updateLocation as updateMapLocation,
+  deleteLocation as deleteMapLocation,
+  streamLocations as streamMapLocations,
+} from "./routes/map-locations";
+
 // Bank transfer routes
 import {
   getAllBankTransfers,
@@ -2201,6 +2210,13 @@ export function createServer() {
   // Public routes
   app.get("/api/new-projects", getPublicNewProjects); // Public endpoint for active projects
   app.get("/api/new-projects/banners", getPublicNewProjectBanners); // Public banners
+
+  // Map Locations (public + admin)
+  app.get("/api/map-locations", listMapLocations);
+  app.get("/api/map-locations/stream", streamMapLocations);
+  app.post("/api/admin/map-locations", authenticateToken, requireAdmin, createMapLocation);
+  app.put("/api/admin/map-locations/:id", authenticateToken, requireAdmin, updateMapLocation);
+  app.delete("/api/admin/map-locations/:id", authenticateToken, requireAdmin, deleteMapLocation);
 
   // Admin routes for projects
   app.get(
