@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import { FirebaseAuthProvider } from "./hooks/useFirebaseAuth";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -252,6 +252,8 @@ function App() {
                   <Route path="/notifications" element={<Notifications />} />
 
                   {/* Content Pages */}
+                  <Route path="/pages" element={<Navigate to="/" replace />} />
+                  <Route path="/pages/:slug" element={<Navigate to="/p/:slug" replace />} />
                   <Route path="/about-us" element={<AboutUs />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route
