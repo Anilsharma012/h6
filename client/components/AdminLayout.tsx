@@ -202,6 +202,7 @@ const menuItems: MenuItem[] = [
       { id: "states", label: "States", icon: MapPin },
       { id: "cities", label: "Cities", icon: MapPin },
       { id: "areas", label: "Areas", icon: MapPin },
+      { id: "map-locations", label: "Map Locations", icon: MapPin },
     ],
   },
   {
