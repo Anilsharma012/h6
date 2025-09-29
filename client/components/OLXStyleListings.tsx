@@ -188,7 +188,7 @@ export default function OLXStyleListings() {
           Fresh recommendations
         </h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
           {properties.map((property) => (
             <div
               key={property._id}
@@ -196,7 +196,7 @@ export default function OLXStyleListings() {
               className="bg-white border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow active:scale-98"
             >
               {/* Image */}
-              <div className="relative aspect-square">
+              <div className="relative aspect-[4/3]">
                 <img
                   data-wm="1"
                   src={
@@ -240,23 +240,23 @@ export default function OLXStyleListings() {
               </div>
 
               {/* Content */}
-              <div className="p-3">
-                <div className="text-lg font-bold text-gray-900 mb-1">
+              <div className="p-2.5">
+                <div className="text-base md:text-lg font-bold text-gray-900 mb-1">
                   {formatPrice(property.price)}
                 </div>
 
-                <h3 className="text-sm text-gray-700 mb-2 line-clamp-2 leading-tight">
+                <h3 className="text-[13px] md:text-sm text-gray-700 mb-1.5 line-clamp-2 leading-tight">
                   {property.title}
                 </h3>
 
-                <div className="flex items-center text-xs text-gray-500 mb-1">
+                <div className="flex items-center text-[11px] md:text-xs text-gray-500 mb-1">
                   <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
                   <span className="truncate">
                     {property.location.city}, {property.location.state}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-gray-400 mb-2">
+                <div className="flex items-center justify-between text-[11px] md:text-xs text-gray-400 mb-2">
                   <div className="flex items-center">
                     <Clock className="h-3 w-3 mr-1" />
                     <span>{getTimeAgo(property.createdAt)}</span>
@@ -275,7 +275,7 @@ export default function OLXStyleListings() {
                     setEnquiryModalOpen(true);
                   }}
                   data-testid="enquiry-btn"
-                  className="w-full bg-[#C70000] hover:bg-[#A60000] text-white text-xs py-2 px-3 rounded-md flex items-center justify-center space-x-1 transition-colors"
+                  className="w-full bg-[#C70000] hover:bg-[#A60000] text-white text-[11px] md:text-xs py-1.5 px-3 rounded-md flex items-center justify-center space-x-1 transition-colors"
                 >
                   <Send className="h-3 w-3" />
                   <span>Enquiry Now</span>
