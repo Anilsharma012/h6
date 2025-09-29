@@ -57,6 +57,7 @@ import HomepageSliderManagement from "../components/admin/HomepageSliderManageme
 import StaffManagement from "../components/admin/StaffManagement";
 import AdminBanners from "../components/AdminBanners";
 import NewProjectsManagement from "../components/admin/NewProjectsManagement";
+import MapLocationsManagement from "../components/admin/MapLocationsManagement";
 
 import PropertyImageManager from "../components/admin/PropertyImageManager";
 import PaymentTransactions from "../components/admin/PaymentTransactions";
@@ -1171,6 +1172,8 @@ export default function Admin() {
           return <CategoryManagement />;
         case "areas":
           return <CategoryManagement />;
+        case "map-locations":
+          return <MapLocationsManagement />;
         case "report-reasons":
           return <ReportsManagement />;
         case "send-notification":
