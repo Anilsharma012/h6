@@ -180,7 +180,7 @@ const HeroImageSlider: React.FC = () => {
   }
 
   return (
-    <div className="relative w-full h-[300px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden bg-gray-900">
+    <div className="relative w-full h-[46vh] min-h-[300px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden bg-black">
       <Carousel
         opts={{
           align: "start",
