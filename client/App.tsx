@@ -138,6 +138,7 @@ function App() {
                     element={<OtherServicesListings />}
                   />
                   <Route path="/advertise" element={<Advertise />} />
+                  <Route path="/packages" element={<Navigate to="/advertise" replace />} />
                   {/* Category/Subcategory Listings */}
                   <Route path="/buy/:slug" element={<CategoryProperties />} />
                   <Route path="/sale/:slug" element={<CategoryProperties />} />
